@@ -1,0 +1,64 @@
+# ❌ Archivos y directorios de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.log
+
+# ❌ Archivos de entorno virtual (venv)
+venv/
+env/
+*.venv
+*.env
+
+# ❌ Archivos de configuración de entorno y variables sensibles
+.env
+*.env.local
+*.env.production
+*.env.test
+config/settings_local.py  # Si tienes settings personalizados
+
+# ❌ Archivos de bases de datos SQLite
+db.sqlite3
+*.sqlite3
+
+# ❌ Archivos de migraciones de Django innecesarios
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/__pycache__/
+
+
+
+# ❌ Dependencias instaladas con pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ❌ Archivos de compilación de Django
+*.log
+local_settings.py
+instance/
+
+# ❌ Configuración de IDEs y editores de código
+.vscode/
+.idea/
+*.iml
+
+# ❌ Archivos de Docker y contenedores (si usas Docker)
+docker-compose.override.yml
+.dockerignore
+
+# ❌ Archivos de caché y compilados
+node_modules/
+bower_components/
+*.css.map
+*.js.map
+
+# ❌ Archivos generados por Celery (si usas Celery)
+celerybeat-schedule
+celerybeat.pid
+
+# ❌ Archivos de configuración de MacOS/Linux/Windows
+.DS_Store
+Thumbs.db

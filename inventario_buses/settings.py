@@ -11,18 +11,22 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import environ
+import os
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secreTODO: CAMBIAR despues
-SECRET_KEY = 'django-insecure-q#@m*8(-um76)@uzv6i0c$wgwkpe#g86udwi94q3bo*uc=e@yj'
+SECRET_KEY = env("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production! TODO:
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -38,17 +42,42 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
+    'drf_spectacular',
+    'modules.inventario',
+    'modules.rutas_buses',
+    'modules.usuarios',
+    'modules.ventas'
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',  # Para manejar sesiones en Django Admin
-        'rest_framework.authentication.TokenAuthentication',  # Para la API (necesita `authtoken`)
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Para la API con jwt
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # Todas las vistas requieren autenticación TODO: cambiar
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', # Swagger
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Sistema de Inventario de Autobuses',
+    'DESCRIPTION': 'API para gestionar autobuses, rutas, repuestos y ventas de boletos.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_SETTINGS': {
+        'persistAuthorization': True,  # Mantener tokens entre recargas TODO: cambiar en produccion,
+    },
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,  # Renueva el refresh token en cada uso TODO: investigar estos 3 despues
+    "BLACKLIST_AFTER_ROTATION": True,  # Evita reutilizar tokens antiguos
+    "SIGNING_KEY": "",  # Puedes dejarlo vacío y se usará el `SECRET_KEY` de Django
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,9 +115,17 @@ WSGI_APPLICATION = 'inventario_buses.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',  # Cambiar de sqlite3 a postgresql
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env('DB_HOST', default='localhost'),  # O la IP del servidor de la BD
+        'PORT': env('DB_PORT', default='5432'),
     }
+        #{
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+        #}
 }
 
 
@@ -114,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ES'
 
 TIME_ZONE = 'UTC' #TODO: cambiar esto y lo de arriba
 
@@ -132,3 +169,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# bucket de archivos
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

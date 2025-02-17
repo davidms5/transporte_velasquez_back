@@ -15,8 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf.urls.static import static
+from .settings import MEDIA_URL, MEDIA_ROOT, DEBUG
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from core.permissions import IsAdminOrReadOnly
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),  # Esquema JSON de OpenAPI
+    
+    #rutas de la api
+    path("api/usuarios/", include("modules.usuarios.urls"))
 ]
+
+urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
+
+if DEBUG:  # Solo habilitar Swagger en modo desarrollo TODO: ver como manejar mejor esto despues
+    urlpatterns += [
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),  # UI de Swagger
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),  # UI de ReDoc
+    ]

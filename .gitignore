@@ -6,7 +6,7 @@ __pycache__/
 *.swp
 *.swo
 *.log
-
+todo.md
 # ❌ Archivos de entorno virtual (venv)
 venv/
 env/

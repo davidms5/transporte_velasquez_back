@@ -29,7 +29,7 @@ urlpatterns = [
     path("api/usuarios/", include("modules.usuarios.urls"))
 ]
 
-urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
+urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT) #TODO: revisar despues ^media/(?P<path>.*)$
 
 if DEBUG:  # Solo habilitar Swagger en modo desarrollo TODO: ver como manejar mejor esto despues
     urlpatterns += [

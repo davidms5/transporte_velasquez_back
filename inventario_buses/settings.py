@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'modules.ventas'
 ]
 
+AUTH_USER_MODEL = 'usuarios.CustomUser' #modelo de los usuarios
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',  # Para manejar sesiones en Django Admin

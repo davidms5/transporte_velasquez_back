@@ -5,7 +5,7 @@ from modules.rutas_buses.models import Ruta
 class Ticket(models.Model):
     """Registro de venta de boletos"""
     cliente_nombre = models.CharField(max_length=255)
-    cliente_dpi = models.CharField(max_length=20)
+    cliente_dpi = models.CharField(max_length=20, db_index=True)
     es_adulto = models.BooleanField(default=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     ruta = models.ForeignKey(Ruta, on_delete=models.CASCADE)
@@ -17,7 +17,7 @@ class Ticket(models.Model):
 class Factura(models.Model):
     """Tabla de facturas generadas"""
     venta = models.OneToOneField(Ticket, on_delete=models.CASCADE)
-    numero_factura = models.CharField(max_length=20, unique=True)
+    numero_factura = models.CharField(max_length=20, unique=True, db_index=True)
     logo = models.ImageField(upload_to="facturas/", null=True) #TODO: ver como hacer un serializer para subir el logo por la api
 
     def __str__(self):

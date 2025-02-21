@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Repuestos(models.Model):
-    nombre = models.CharField(max_length=255, unique=True)
+    nombre = models.CharField(max_length=255, unique=True, db_index=True)
     cantidad = models.PositiveIntegerField(default=0)
     
     def __str__(self):

@@ -7,6 +7,10 @@ class Bus(models.Model):
     modelo = models.CharField(max_length=50, db_index=True)
     ruta_asignada = models.ForeignKey('Ruta', null=True, blank=True, on_delete=models.SET_NULL, related_name="buses")
 
+    class Meta:
+        verbose_name = "Bus"
+        verbose_name_plural = "Buses"
+        
     def __str__(self):
         return f"Bus {self.numero_id} - {self.modelo}"
 
@@ -17,6 +21,10 @@ class Conductor(models.Model):
     dpi = models.CharField(max_length=20, unique=True, db_index=True)
     expiracion_licencia = models.DateField()
 
+    class Meta:
+        verbose_name = "Conductor"
+        verbose_name_plural = "Conductores"
+        
     def __str__(self):
         return f"{self.nombre} ({self.numero_licencia})"
 
@@ -24,6 +32,10 @@ class Horarios(models.Model):
     """Modelo para representar los horarios disponibles de una ruta"""
     time = models.TimeField(unique=True)  # ✅ Horario único
 
+    class Meta:
+        verbose_name = "Horario"
+        verbose_name_plural = "Horarios"
+        
     def __str__(self):
         return self.time.strftime("%H:%M")
     

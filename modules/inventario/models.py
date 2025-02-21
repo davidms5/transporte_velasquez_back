@@ -5,6 +5,10 @@ class Repuestos(models.Model):
     nombre = models.CharField(max_length=255, unique=True, db_index=True)
     cantidad = models.PositiveIntegerField(default=0)
     
+    class Meta:
+        verbose_name = "Repuesto"
+        verbose_name_plural = "Repuestos"
+    
     def __str__(self):
         return f"{self.nombre} ({self.cantidad} disponibles)"
     

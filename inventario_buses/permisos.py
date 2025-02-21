@@ -1,0 +1,1 @@
+#agregar permisos de acceso a cada una de los 4 roles, naturalmente el admin tiene acceso a todo

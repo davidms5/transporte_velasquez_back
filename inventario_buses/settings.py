@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
@@ -73,6 +74,23 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
+#CORS
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+    
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Permite solicitudes desde tu frontend en Vite
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Permitir envío de cookies y autenticación
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Guarda sesiones en la BD
+SESSION_COOKIE_NAME = "sessionid"  # Nombre de la cookie de sesión
+SESSION_COOKIE_HTTPONLY = True  # Protege la cookie contra JavaScript
+SESSION_COOKIE_SAMESITE = "None"  # Permite el envío de cookies en la misma página
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Mantiene la sesión abierta
+SESSION_COOKIE_SECURE = False  # ⚠️ No usar en producción, pero necesario en local
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
@@ -82,6 +100,7 @@ SIMPLE_JWT = {
     "SIGNING_KEY": "",  # Puedes dejarlo vacío y se usará el `SECRET_KEY` de Django
 }
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

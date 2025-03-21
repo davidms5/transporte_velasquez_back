@@ -32,3 +32,12 @@ class HistorialRepuestosListView(ListAPIView):
     queryset = HistorialRepuestos.objects.select_related('repuesto').order_by('-timestamp')
     serializer_class = HistorialRepuestosSerializer
 
+class RepuestoDetailCustomView(APIView):
+    def get(self, request, id):
+        try:
+            repuesto = Repuestos.objects.get(id=id)
+        except Repuestos.DoesNotExist:
+            return Response({"error": "Repuesto no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = RepuestosSerializer(repuesto)
+        return Response(serializer.data)

@@ -16,6 +16,9 @@ class HistorialRepuestos(models.Model):
     estado = models.CharField(choices=[('IN', 'Entrada'), ('OUT', 'Salida')], max_length=3)
     cantidad = models.PositiveIntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+    #class Meta:
+    #    db_table = 'inventario_historial_repuestos'  # <- Nombre personalizado de la tabla TODO: descomentar y arreglar relacion en base de datos
 
     def __str__(self):
         return f"{self.repuesto.nombre} - {self.get_estado_display()} - {self.cantidad}"

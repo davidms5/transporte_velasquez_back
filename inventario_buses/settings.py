@@ -55,14 +55,24 @@ AUTH_USER_MODEL = 'usuarios.CustomUser' #modelo de los usuarios
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',  # Para manejar sesiones en Django Admin
+        #'rest_framework.authentication.SessionAuthentication',  # Para manejar sesiones en Django Admin #TODO: revisar si es necesario despues
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # Para la API con jwt
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # Todas las vistas requieren autenticación TODO: cambiar
     ],
+     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # Solo respuestas JSON
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',  # Solo solicitudes JSON
+    ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', # Swagger
 }
+
+
+# Desactivar CSRF solo en la API
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Sistema de Inventario de Autobuses',
@@ -79,7 +89,7 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
     
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Permite solicitudes desde tu frontend en Vite
+    "http://localhost:5173", # Permite solicitudes desde tu frontend en Vite
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # Permitir envío de cookies y autenticación
@@ -87,10 +97,13 @@ CORS_ALLOW_CREDENTIALS = True  # Permitir envío de cookies y autenticación
 SESSION_ENGINE = "django.contrib.sessions.backends.db"  # Guarda sesiones en la BD
 SESSION_COOKIE_NAME = "sessionid"  # Nombre de la cookie de sesión
 SESSION_COOKIE_HTTPONLY = True  # Protege la cookie contra JavaScript
-SESSION_COOKIE_SAMESITE = "None"  # Permite el envío de cookies en la misma página
+SESSION_COOKIE_SAMESITE = "Lax"  # Permite el envío de cookies en la misma página
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Mantiene la sesión abierta
-SESSION_COOKIE_SECURE = False  # ⚠️ No usar en producción, pero necesario en local
+SESSION_COOKIE_SECURE = True  # ⚠️ No usar en producción, pero necesario en local
 
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True 
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),

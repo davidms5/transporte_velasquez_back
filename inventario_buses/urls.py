@@ -26,7 +26,8 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),  # Esquema JSON de OpenAPI
     
     #rutas de la api
-    path("api/usuarios/", include("modules.usuarios.urls"))
+    path("api/usuarios/", include("modules.usuarios.urls")),
+    path("api/inventario/", include("modules.inventario.urls"))
 ]
 
 urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT) #TODO: revisar despues ^media/(?P<path>.*)$

@@ -8,26 +8,27 @@ class RepuestosSerializer(serializers.ModelSerializer):
 
 class HistorialRepuestosSerializer(serializers.ModelSerializer):
     repuesto = RepuestosSerializer()
+    timestamp = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
     class Meta:
         model = HistorialRepuestos
-        fields = ['repuesto', 'estado', 'cantidad']
+        fields = ['repuesto', 'estado', 'cantidad', "timestamp"]
 
 
-# esto puede servir tanto para post como para put de historial TODO: que tambien reciba el id del repuesto
+# esto puede servir tanto para post como para put de historial TODO: revisar que estado = 'IN' no tenga redundancias en el serializer
 class RepuestoHistorialSerializer(serializers.Serializer):
     """Serializador para manejar el POST que crea un repuesto y su historial"""
     repuesto_id = serializers.IntegerField(required=False)
     nombre = serializers.CharField(max_length=255)
     descripcion = serializers.CharField(required=False, allow_blank=True)
-    cantidad = serializers.IntegerField()
+    cantidad = serializers.IntegerField(min_value=1)
     numero_factura = serializers.CharField(required=True)
-    estado = serializers.ChoiceField(choices=[('IN', 'Entrada'), ('OUT', 'Salida')])
+    estado = serializers.ChoiceField(choices=[('IN', 'Entrada'), ('OUT', 'Salida')], required=False)
 
     def create(self, validated_data):
         """Crea un repuesto y su historial asociado"""
         repuesto = None
         repuesto_id = validated_data.get("repuesto_id")
-        estado = validated_data['estado']
+        estado = validated_data.get('estado', 'IN')
         
         if repuesto_id:
             try:

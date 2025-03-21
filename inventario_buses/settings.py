@@ -189,7 +189,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ES'
 
-TIME_ZONE = 'UTC' #TODO: cambiar esto y lo de arriba
+TIME_ZONE = 'America/Tegucigalpa'#'UTC' #TODO: cambiar esto y lo de arriba
 
 USE_I18N = True
 

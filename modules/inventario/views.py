@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Repuestos, HistorialRepuestos
-from .serializers import RepuestoHistorialSerializer, HistorialRepuestosSerializer, RepuestosSerializer
+from .models import Repuestos, HistorialRepuestos, Factura
+from .serializers.serializers import RepuestoHistorialSerializer, HistorialRepuestosSerializer, RepuestosSerializer
+from .serializers.factura_serializers import FacturaCreateSerializer, FacturaDetailSerializer, FacturaUpdateSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
@@ -41,3 +42,36 @@ class RepuestoDetailCustomView(APIView):
 
         serializer = RepuestosSerializer(repuesto)
         return Response(serializer.data)
+    
+#Factura views TODO: luego separar en una carpeta aparte de views
+
+class FacturaListCreateView(generics.ListCreateAPIView):
+    queryset = Factura.objects.filter(activo=True).order_by('-id')
+    serializer_class = FacturaDetailSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return FacturaCreateSerializer
+        return FacturaDetailSerializer
+
+
+class FacturaRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = Factura.objects.filter(activo=True)
+    lookup_field = 'id'
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return FacturaUpdateSerializer
+        return FacturaDetailSerializer
+
+
+class FacturaSoftDeleteView(generics.DestroyAPIView):
+    queryset = Factura.objects.filter(activo=True)
+    serializer_class = FacturaDetailSerializer
+    lookup_field = 'id'
+
+    def delete(self, request, *args, **kwargs):
+        factura = self.get_object()
+        factura.activo = False
+        factura.save()
+        return Response({"detail": "Factura eliminada."}, status=status.HTTP_204_NO_CONTENT) #soft delete

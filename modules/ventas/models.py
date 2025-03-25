@@ -19,6 +19,7 @@ class Factura(models.Model):
     venta = models.OneToOneField(Ticket, on_delete=models.CASCADE)
     numero_factura = models.CharField(max_length=20, unique=True, db_index=True)
     logo = models.ImageField(upload_to="facturas/", null=True) #TODO: ver como hacer un serializer para subir el logo por la api
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Factura {self.numero_factura} - {self.venta.cliente_nombre}"

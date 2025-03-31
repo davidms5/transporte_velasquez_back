@@ -10,6 +10,6 @@ urlpatterns = [
     
     #facturas
     path('facturas/', FacturaListCreateView.as_view(), name='factura-list-create'),
-    path('facturas/<int:id>/', FacturaRetrieveUpdateView.as_view(), name='factura-detail-update'),
-    path('facturas/<int:id>/delete/', FacturaSoftDeleteView.as_view(), name='factura-soft-delete'),
+    path('facturas/<str:codigo>/', FacturaRetrieveUpdateView.as_view(), name='factura-detail-update'),
+    path('facturas/<str:codigo>/delete/', FacturaSoftDeleteView.as_view(), name='factura-soft-delete'),
 ]

@@ -57,7 +57,7 @@ class FacturaListCreateView(generics.ListCreateAPIView):
 
 class FacturaRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Factura.objects.filter(activo=True)
-    lookup_field = 'id'
+    lookup_field = 'codigo'
 
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
@@ -68,7 +68,7 @@ class FacturaRetrieveUpdateView(generics.RetrieveUpdateAPIView):
 class FacturaSoftDeleteView(generics.DestroyAPIView):
     queryset = Factura.objects.filter(activo=True)
     serializer_class = FacturaDetailSerializer
-    lookup_field = 'id'
+    lookup_field = 'codigo'
 
     def delete(self, request, *args, **kwargs):
         factura = self.get_object()

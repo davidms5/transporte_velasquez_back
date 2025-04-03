@@ -53,17 +53,17 @@ class RutaAsignarConductorSerializer(serializers.ModelSerializer):
         model = Ruta
         fields = ['conductor']
     
-    def validate_conductor(self, conductor):
-        ruta_actual = self.instance
-
-        # Buscar si el conductor ya está asignado a otra ruta distinta
-        ruta_existente = Ruta.objects.filter(conductor=conductor).exclude(id=ruta_actual.id).first()
-        if ruta_existente:
-            raise serializers.ValidationError(
-                f"El conductor ya está asignado a la ruta {ruta_existente.numero_ruta}."
-            )
-
-        return conductor
+    #def validate_conductor(self, conductor): TODO: verificar si esto es relaMENTE necesario, ya que tecnjicamente la validacion se hace en horario ruta
+    #    ruta_actual = self.instance
+#
+    #    # Buscar si el conductor ya está asignado a otra ruta distinta
+    #    ruta_existente = Ruta.objects.filter(conductor=conductor).exclude(id=ruta_actual.id).first()
+    #    if ruta_existente:
+    #        raise serializers.ValidationError(
+    #            f"El conductor ya está asignado a la ruta {ruta_existente.numero_ruta}."
+    #        )
+#
+    #    return conductor
 
 
 class ConductorListaSerializer(serializers.ModelSerializer):

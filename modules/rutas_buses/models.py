@@ -59,7 +59,7 @@ class HorarioRuta(models.Model):
         unique_together = ('ruta', 'bus', 'dia', 'hora_salida')
 
     def __str__(self):
-        return f"{self.ruta.numero_ruta} - {self.bus.numero_bus} - {self.get_dia_display()} {self.hora_salida.strftime('%H:%M')}"
+        return f"{self.ruta.numero_ruta} - {self.bus.numero_id} - {self.get_dia_display()} {self.hora_salida.strftime('%H:%M')}"
     
     
 # models.py

@@ -26,7 +26,7 @@ class RegistrarRepuestoAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class RepuestosListView(ListAPIView):
-    queryset = Repuestos.objects.all().order_by('id')
+    queryset = Repuestos.objects.filter(cantidad__gt=0).order_by('id')
     serializer_class = RepuestosSerializer
 
 class HistorialRepuestosListView(ListAPIView):

@@ -9,6 +9,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.middleware.csrf import get_token
 from .models import CustomUser, Constantes
 from .serializers import CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
 # Create your views here.
 
 
@@ -41,6 +43,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
                 # Autenticar al usuario en Django
                 user = CustomUser.objects.get(username=username)
+                refresh = RefreshToken.for_user(user)
                 
                 if user.is_staff or user.role == Constantes.ADMIN:
                     
@@ -49,12 +52,21 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                     request.session.save()
                     #FIXME: ver tema de que no guarda y/o comparte el sessionid de la cookie,que necesito para loguearme en el admin
                     # Enviar cookies de sesión y CSRF
-                    response.set_cookie("sessionid", request.session.session_key, httponly=True, samesite="None")
+                    response.set_cookie("sessionid", request.session.session_key, httponly=True, samesite="Lax")
                     response.set_cookie("csrftoken", get_token(request), httponly=False, samesite="None")
 
                     # Redirigir automáticamente al panel de administración si es admin
                     response.data["redirect"] = "/admin/" #TODO: poner esto en un env
-
+                    
+                    #response = Response({'message': 'Login successful'}) TODO: cambiar esto despues para que el token no vaya en el body
+                    #FIXME: sessionid se guarda 2 veces
+                response.set_cookie(
+                    key='jwt',
+                    value=str(refresh.access_token),
+                    httponly=False,  # Cambiar a True si no necesitas acceder al token desde JavaScript TODO:
+                    #secure=True,  # Solo si estás en HTTPS
+                    samesite='Lax'
+                )
             except CustomUser.DoesNotExist:
                 return JsonResponse({"error": "Usuario no encontrado"}, status=404)
             except Exception as e:

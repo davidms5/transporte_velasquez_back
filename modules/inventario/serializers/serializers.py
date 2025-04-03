@@ -16,7 +16,7 @@ class RepuestosSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Repuestos
-        fields = ['nombre', 'descripcion', 'cantidad', 'factura']
+        fields = ["id", 'nombre', 'descripcion', 'cantidad', 'factura']
 
 
 class FacturaSerializer(serializers.ModelSerializer):
@@ -44,11 +44,11 @@ class HistorialRepuestosSerializer(serializers.ModelSerializer):
 # esto puede servir tanto para post como para put de historial TODO: revisar que estado = 'IN' no tenga redundancias en el serializer
 class RepuestoHistorialSerializer(serializers.Serializer):
     """Serializador para manejar el POST que crea un repuesto y su historial"""
-    repuesto_id = serializers.IntegerField(required=False)
-    nombre = serializers.CharField(max_length=255)
+    repuesto_id = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    nombre = serializers.CharField(max_length=255, required=True)
     descripcion = serializers.CharField(required=False, allow_blank=True)
     cantidad = serializers.IntegerField(min_value=1)
-    numero_factura = serializers.CharField(required=True)
+    #numero_factura = serializers.CharField(required=True)
     estado = serializers.ChoiceField(choices=[('IN', 'Entrada'), ('OUT', 'Salida')], required=False, default='IN')
     factura_codigo = serializers.CharField(required=True)  # NUEVO
 

@@ -38,3 +38,13 @@ class HorarioPredefinidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = HorarioPredefinido
         fields = ['hora_salida']
+
+class RutaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ruta
+        fields = ['numero_ruta', 'origen', 'destino']
+
+class BusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bus
+        fields = ['numero_id', 'modelo']

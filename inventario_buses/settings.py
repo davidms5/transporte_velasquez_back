@@ -108,6 +108,10 @@ CSRF_COOKIE_SAMESITE = "None"
 CSRF_COOKIE_SECURE = True 
 
 SIMPLE_JWT = {
+    'AUTH_COOKIE': 'jwt',  # nombre de la cookie
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_SECURE': False,  # True en producción (HTTPS)
+    'AUTH_COOKIE_SAMESITE': 'Lax',
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,  # Renueva el refresh token en cada uso TODO: investigar estos 3 despues

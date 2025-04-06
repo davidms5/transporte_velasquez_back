@@ -3,12 +3,14 @@ from django.db import models
 # Create your models here.
 
 class Factura(models.Model):
-    codigo = models.CharField(max_length=50, unique=True, db_index=True)  # Código de factura
+    codigo = models.CharField(max_length=50, db_index=True)  # Código de factura
     proveedor = models.CharField(max_length=255)
     numero_factura = models.CharField(max_length=100)
     cai = models.CharField(max_length=100)  # Código de autorización de impresión
     activo = models.BooleanField(default=True)  # Soft delete
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
         return f"Factura {self.codigo} - {self.proveedor}"
     

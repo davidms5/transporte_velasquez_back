@@ -78,10 +78,10 @@ class RepuestoHistorialSerializer(serializers.Serializer):
             nombre = validated_data['nombre']
             
 
-            if Repuestos.objects.filter(Q(nombre=nombre) | Q(factura=factura)).exists():
-                raise serializers.ValidationError(
-                    "Ya existe un repuesto con ese nombre o número de factura."
-                )
+            #if Repuestos.objects.filter(Q(nombre=nombre) | Q(factura=factura)).exists(): TODO: revisar si es necesario
+            #    raise serializers.ValidationError(
+            #        "Ya existe un repuesto con ese nombre o número de factura."
+            #    )
             repuesto = Repuestos.objects.create(
                 nombre=validated_data['nombre'],
                 descripcion=validated_data.get('descripcion', ''),

@@ -29,6 +29,7 @@ urlpatterns = [
     path("api/usuarios/", include("modules.usuarios.urls")),
     path("api/inventario/", include("modules.inventario.urls")),
     path("api/rutas-buses/", include("modules.rutas_buses.urls")),
+    path("api/ventas/", include("modules.ventas.urls")),
 ]
 
 urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT) #TODO: revisar despues ^media/(?P<path>.*)$

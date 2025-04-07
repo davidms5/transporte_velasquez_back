@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.generics import ListAPIView
 from .models import HorarioPredefinido, Ruta, HorarioRuta
 from .serializers.rutas_historial_serializer import RutaSimpleSerializer, AsignacionRutaSerializer, HorarioAsignadoSerializer
-from .serializers.horario_ruta_serializer import HorarioPredefinidoSerializer, HorarioRutaCreateSerializer, RutaSerializer, BusSerializer
+from .serializers.horario_ruta_serializer import HorarioPredefinidoSerializer, HorarioRutaCreateSerializer, RutaSerializer, BusSerializer, HorarioRutaSerializer
 from .serializers.conductor_bus_serializer import RegistroConductorBusSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -126,3 +126,23 @@ class RutasSinHorarioView(APIView):
             "rutas_sin_horario": RutaSerializer(rutas_sin_horario, many=True).data,
             "buses_disponibles": BusSerializer(buses_disponibles, many=True).data,
         })
+        
+class RutasConHorarioView(APIView):
+    permission_classes = [IsAuthenticated]  # si querés protección por login/token
+
+    def get(self, request):
+        # Filtra rutas con al menos un horario asignado
+        rutas = Ruta.objects.filter(horarios__isnull=False).distinct()
+        serializer = RutaSerializer(rutas, many=True)
+        return Response(serializer.data)
+    
+class HorariosDeRutaView(APIView):
+    def get(self, request, numero_ruta):
+        try:
+            ruta = Ruta.objects.get(numero_ruta=numero_ruta)
+        except Ruta.DoesNotExist:
+            return Response({"error": "Ruta no encontrada."}, status=status.HTTP_404_NOT_FOUND)
+
+        horarios = ruta.horarios.all()
+        serializer = HorarioRutaSerializer(horarios, many=True)
+        return Response(serializer.data)

@@ -40,11 +40,18 @@ class HorarioPredefinidoSerializer(serializers.ModelSerializer):
         fields = ['hora_salida']
 
 class RutaSerializer(serializers.ModelSerializer):
+    bus = serializers.SlugRelatedField(read_only=True, slug_field='numero_id')
     class Meta:
         model = Ruta
-        fields = ['numero_ruta', 'origen', 'destino']
+        fields = ['numero_ruta', 'origen', 'destino', "precio", "bus"]
 
 class BusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bus
         fields = ['numero_id', 'modelo']
+
+class HorarioRutaSerializer(serializers.ModelSerializer):
+    bus = serializers.CharField(source="bus.numero_id")
+    class Meta:
+        model = HorarioRuta
+        fields = ['id', 'bus', 'dia', 'hora_salida', 'hora_llegada']

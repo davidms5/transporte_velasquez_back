@@ -27,7 +27,7 @@ class Ruta(models.Model):
     destino = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     # TODO: horario rutas
-    #bus = models.ManyToManyField(Bus, related_name="rutas")
+    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name="rutas")
     conductor = models.ForeignKey(Conductor, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

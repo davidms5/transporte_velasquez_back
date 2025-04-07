@@ -8,7 +8,9 @@ from .views import (
     ListaConductoresView,
     CrearHorarioRutaView,
     DatosAsignacionRutaView,
-    RutasSinHorarioView)
+    RutasSinHorarioView,
+    RutasConHorarioView,
+    HorariosDeRutaView)
     
 
 
@@ -23,6 +25,8 @@ urlpatterns = [
     path('conductores/', ListaConductoresView.as_view(), name='lista-conductores'),
     path('horarios/asignar/', CrearHorarioRutaView.as_view(), name='crear-horario-ruta'),
     path('horarios/rutas-disponibles/', RutasSinHorarioView.as_view(), name='rutas-disponibles'),
+    path("rutas-con-horario/", RutasConHorarioView.as_view(), name="rutas-con-horario"),
+    path("rutas/<str:numero_ruta>/horarios/", HorariosDeRutaView.as_view(), name="horarios-ruta")
 
 ]
 

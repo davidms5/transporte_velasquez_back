@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils.timezone import now
 from django.utils.dateparse import parse_date
+from modules.ventas.services.cierre_diario_service import calcular_cierre_del_dia
+from core.permissions import IsAdminOrSupervisor
 # Create your views here.
 class CrearTicketView(generics.CreateAPIView):
     queryset = Ticket.objects.all()
@@ -47,3 +49,26 @@ class ReporteVentasView(APIView):
 
         serializer = VentaReporteSerializer(facturas, many=True)
         return Response(serializer.data)
+    
+class CierreDiarioView(APIView):
+    
+    permission_classes = [IsAdminOrSupervisor]
+    
+    def post(self, request):
+        try:
+            facturas_manuales = request.data.get("facturas_manuales", [])
+            cierre, nuevas_manuales = calcular_cierre_del_dia(facturas_manuales, request.user) #esto ignora las facturas manuales duplicadas de las guardadas en la base de datos
+
+            return Response({
+                "mensaje": "Cierre del día generado correctamente.",
+                "fecha": str(cierre.fecha),
+                "total_facturas": cierre.total_facturas,
+                "total_monto": str(cierre.total_monto),
+                "manuales_registradas": nuevas_manuales
+            }, status=status.HTTP_201_CREATED)
+
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": "Error inesperado al procesar el cierre."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

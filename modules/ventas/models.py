@@ -1,5 +1,6 @@
 from django.db import models
 from modules.rutas_buses.models import HorarioRuta
+from modules.usuarios.models import CustomUser
 import uuid
 from django.utils import timezone
 # Create your models here.
@@ -25,8 +26,16 @@ class Ticket(models.Model):
 
 class Factura(models.Model):
     """Tabla de facturas generadas"""
+    
+    ORIGEN_CHOICES = [
+        ('sistema', 'Sistema'),
+        ('manual', 'Manual'),
+    ]
+    
     venta = models.OneToOneField(Ticket, on_delete=models.CASCADE)
     numero_factura = models.CharField(max_length=20, unique=True, db_index=True)
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    origen = models.CharField(max_length=10, choices=ORIGEN_CHOICES, default='sistema')
     activo = models.BooleanField(default=True)
     #logo = models.ImageField(upload_to="facturas/", null=True) #TODO: ver como hacer un serializer para subir el logo por la api
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,3 +50,15 @@ class Factura(models.Model):
             correlativo = str(uuid.uuid4().int)[:6]  # parte aleatoria única
             self.numero_factura = f"F-{fecha}-{correlativo}"
         super().save(*args, **kwargs)
+
+class CierreDiario(models.Model):
+    fecha = models.DateField(auto_now_add=True, unique=True)
+    total_facturas = models.PositiveIntegerField()
+    total_monto = models.DecimalField(max_digits=12, decimal_places=2)
+
+    creado_por = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    facturas = models.ManyToManyField(Factura, related_name="cierres")
+    
+    def __str__(self):
+        return f"Cierre del {self.fecha}"

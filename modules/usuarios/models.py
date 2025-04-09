@@ -1,18 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission, BaseUserManager
 from typing import Final
+from core.Constantes import Constantes
 # Create your models here.
 
 
-class Constantes:
-    
-    ADMIN: Final = "admin"
-    OPERATOR: Final = "operator"
-    SUPERVISOR: Final = "supervisor"
-    BILLING: Final = "billing"
-    
-    def __setattr__(self, name, value):
-        raise TypeError("No puedes modificar una constante")
+#class Constantes:
+#    
+#    ADMIN: Final = "admin"
+#    OPERATOR: Final = "operator"
+#    SUPERVISOR: Final = "supervisor"
+#    BILLING: Final = "billing"
+#    
+#    def __setattr__(self, name, value):
+#        raise TypeError("No puedes modificar una constante")
     
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email=None, password=None, **extra_fields):

@@ -9,6 +9,7 @@ from .serializers.serializers import RepuestoHistorialSerializer, HistorialRepue
 from .serializers.factura_serializers import FacturaCreateSerializer, FacturaDetailSerializer, FacturaUpdateSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from core.permissions import IsAdminOrFacturacion
 
 #Post repuesto mas historial
 @method_decorator(csrf_exempt, name='dispatch')
@@ -46,6 +47,7 @@ class RepuestoDetailCustomView(APIView):
 #Factura views TODO: luego separar en una carpeta aparte de views
 
 class FacturaListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAdminOrFacturacion]
     queryset = Factura.objects.filter(activo=True).order_by('-id')
     serializer_class = FacturaDetailSerializer
 
@@ -56,6 +58,9 @@ class FacturaListCreateView(generics.ListCreateAPIView):
 
 
 class FacturaRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    
+    permission_classes = [IsAdminOrFacturacion]
+    
     queryset = Factura.objects.filter(activo=True)
     lookup_field = 'codigo'
 

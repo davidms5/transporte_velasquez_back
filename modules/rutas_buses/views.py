@@ -13,6 +13,7 @@ from .models import Ruta, Conductor, Bus
 from .serializers.conductor_bus_serializer import RutaCreateSerializer, RutaAsignarConductorSerializer, ConductorListaSerializer
 from rest_framework.permissions import IsAuthenticated
 from datetime import date
+from core.permissions import IsAdminOrFacturacion
 # Create your views here.
 class HorarioPredefinidoListView(ListAPIView):
     queryset = HorarioPredefinido.objects.all()
@@ -128,7 +129,7 @@ class RutasSinHorarioView(APIView):
         })
         
 class RutasConHorarioView(APIView):
-    permission_classes = [IsAuthenticated]  # si querés protección por login/token
+    permission_classes = [IsAdminOrFacturacion]  # si querés protección por login/token
 
     def get(self, request):
         # Filtra rutas con al menos un horario asignado
@@ -137,6 +138,8 @@ class RutasConHorarioView(APIView):
         return Response(serializer.data)
     
 class HorariosDeRutaView(APIView):
+    permission_classes = [IsAdminOrFacturacion]
+    
     def get(self, request, numero_ruta):
         try:
             ruta = Ruta.objects.get(numero_ruta=numero_ruta)

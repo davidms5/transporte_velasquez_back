@@ -10,21 +10,30 @@ from django.utils.timezone import now
 from django.utils.dateparse import parse_date
 from modules.ventas.services.cierre_diario_service import calcular_cierre_del_dia
 from core.permissions import IsAdminOrSupervisor
+from django.db.models import Count, F, DecimalField, ExpressionWrapper
+from core.permissions import IsAdminOrFacturacion
 # Create your views here.
 class CrearTicketView(generics.CreateAPIView):
+    
+    permission_classes = [IsAdminOrFacturacion]
     queryset = Ticket.objects.all()
+    
     serializer_class = TicketCreateSerializer
-    permission_classes = [IsAuthenticated]
+    
     
 class FacturasActivasView(generics.ListAPIView):
+    
+    permission_classes = [IsAdminOrFacturacion]
+    
     serializer_class = FacturaSerializer
-    permission_classes = [IsAuthenticated]
+    
 
     def get_queryset(self):
         return Factura.objects.filter(activo=True).order_by('-created_at')
     
 class AnularFacturaView(APIView):
-    permission_classes = [IsAuthenticated]
+    
+    permission_classes = [IsAdminOrFacturacion]
 
     def delete(self, request, numero_factura):
         try:
@@ -72,3 +81,37 @@ class CierreDiarioView(APIView):
 
         except Exception as e:
             return Response({"error": "Error inesperado al procesar el cierre."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class ResumenPorRutaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        fecha_str = request.query_params.get("fecha")
+        fecha = fecha_str or now().date()
+
+        tickets = Ticket.objects.filter(created_at__date=fecha)
+
+        resumen = (
+            tickets
+            .values("horario_ruta__ruta__numero_ruta", "horario_ruta__ruta__precio")
+            .annotate(
+                boletos_vendidos=Count("id"),
+                monto_total=ExpressionWrapper(
+                    F("horario_ruta__ruta__precio") * Count("id"),
+                    output_field=DecimalField(max_digits=10, decimal_places=2)
+                )
+            )
+        )
+
+        # Formatear la respuesta
+        resultado = []
+        for item in resumen:
+            resultado.append({
+                "numero_ruta": item["horario_ruta__ruta__numero_ruta"],
+                "boletos_vendidos": item["boletos_vendidos"],
+                "precio_unitario": float(item["horario_ruta__ruta__precio"]),
+                "monto_total": float(item["monto_total"]),
+                "fecha": str(fecha)
+            })
+
+        return Response(resultado)

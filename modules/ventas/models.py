@@ -3,6 +3,7 @@ from modules.rutas_buses.models import HorarioRuta
 from modules.usuarios.models import CustomUser
 import uuid
 from django.utils import timezone
+from modules.rutas_buses.models import Bus
 # Create your models here.
 
 class Ticket(models.Model):
@@ -62,3 +63,13 @@ class CierreDiario(models.Model):
     
     def __str__(self):
         return f"Cierre del {self.fecha}"
+    
+class Combustible(models.Model):
+    """tabla de combustible"""
+    
+    precio_combustible = models.DecimalField(max_digits=10, decimal_places=2)
+    uuid_combustible = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, db_index=True)
+    bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name="combustible") 
+    numero_factura = models.CharField(max_length=20, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

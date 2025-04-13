@@ -16,6 +16,7 @@ class Factura(models.Model):
     
     
 class Repuestos(models.Model):
+    repuesto_id_unico = models.CharField(max_length=50, unique=True, db_index=True)  # ID único para el repuesto
     nombre = models.CharField(max_length=255, db_index=True)
     cantidad = models.PositiveIntegerField(default=0)
     descripcion = models.TextField(blank=True, null=True)  # Campo opcional de texto

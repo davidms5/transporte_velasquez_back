@@ -142,7 +142,7 @@ class HorariosDeRutaView(APIView):
     
     def get(self, request, numero_ruta):
         try:
-            ruta = Ruta.objects.get(numero_ruta=numero_ruta)
+            ruta = Ruta.objects.get(numero_ruta=numero_ruta) #where buss is not null TODO: 
         except Ruta.DoesNotExist:
             return Response({"error": "Ruta no encontrada."}, status=status.HTTP_404_NOT_FOUND)
 

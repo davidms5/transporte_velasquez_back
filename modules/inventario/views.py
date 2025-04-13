@@ -18,13 +18,28 @@ class RegistrarRepuestoAPIView(APIView):
     permission_classes = [IsAuthenticated]  # Requiere autenticación JWT
 
     def post(self, request):
+        repuesto_id = request.data.get('repuesto_id')
         serializer = RepuestoHistorialSerializer(data=request.data)
         
+        #if serializer.is_valid():
+        #    historial = serializer.save()
+        #    respuesta = HistorialRepuestosSerializer(historial)
+        #    return Response(respuesta.data, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
         if serializer.is_valid():
-            historial = serializer.save()
-            respuesta = HistorialRepuestosSerializer(historial)
-            return Response(respuesta.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if repuesto_id:
+                try:
+                    repuesto = Repuestos.objects.get(id=repuesto_id)
+                    historial = serializer.update(repuesto, serializer.validated_data)
+                except Repuestos.DoesNotExist:
+                    return Response({"error": "Repuesto no encontrado."}, status=404)
+            else:
+                historial = serializer.create(serializer.validated_data)
+
+            return Response({"mensaje": "Operación exitosa", "id_historial": historial.id}, status=201)
+
+        return Response(serializer.errors, status=400)
     
 class RepuestosListView(ListAPIView):
     queryset = Repuestos.objects.filter(cantidad__gt=0).order_by('id')

@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from .models import Ticket, Factura
+from .models import Ticket, Factura, Combustible
 from .serializers.ticketFacturasSerializer import TicketCreateSerializer, FacturaSerializer, VentaReporteSerializer
+from .serializers.gastosSerializer import CombustibleCreateSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.timezone import now
 from django.utils.dateparse import parse_date
 from modules.ventas.services.cierre_diario_service import calcular_cierre_del_dia
+from .services.gastos_service import registrar_combustible
 from core.permissions import IsAdminOrSupervisor
 from django.db.models import Count, F, DecimalField, ExpressionWrapper
 from core.permissions import IsAdminOrFacturacion
@@ -115,3 +117,14 @@ class ResumenPorRutaView(APIView):
             })
 
         return Response(resultado)
+    
+class RegistroFacturaCombustibleView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    
+    queryset = Combustible.objects.all()
+    serializer_class = CombustibleCreateSerializer
+    
+    def perform_create(self, serializer):
+        #registrar_combustible(serializer.validated_data)
+        serializer.save()
+        

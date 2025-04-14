@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CrearTicketView, FacturasActivasView, AnularFacturaView, ReporteVentasView, CierreDiarioView, ResumenPorRutaView
+from .views import CrearTicketView, FacturasActivasView, AnularFacturaView, ReporteVentasView, CierreDiarioView, ResumenPorRutaView, RegistroFacturaCombustibleView
 
 urlpatterns = [
     path("tickets-crear/", CrearTicketView.as_view(), name="crear-ticket"),
@@ -8,4 +8,5 @@ urlpatterns = [
     path("reporte-dia/", ReporteVentasView.as_view(), name="reporte-ventas"),
     path('cierre-del-dia/', CierreDiarioView.as_view(), name='cierre-del-dia'),
     path("resumen-por-ruta/", ResumenPorRutaView.as_view(), name="resumen-por-ruta"),
+    path("gastos/combustible-registrar/", RegistroFacturaCombustibleView.as_view(), name="registrar-combustible")
 ]

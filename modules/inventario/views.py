@@ -9,13 +9,13 @@ from .serializers.serializers import RepuestoHistorialSerializer, HistorialRepue
 from .serializers.factura_serializers import FacturaCreateSerializer, FacturaDetailSerializer, FacturaUpdateSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from core.permissions import IsAdminOrFacturacion
+from core.permissions import IsAdminOrFacturacion, IsAdminOrSupervisor
 
 #Post repuesto mas historial
 @method_decorator(csrf_exempt, name='dispatch')
 class RegistrarRepuestoAPIView(APIView):
     """Endpoint para registrar un repuesto y su historial"""
-    permission_classes = [IsAuthenticated]  # Requiere autenticación JWT
+    permission_classes = [IsAuthenticated]  # TODO: que sea supervisor y/o operador
 
     def post(self, request):
         repuesto_id = request.data.get('repuesto_id')
@@ -42,10 +42,12 @@ class RegistrarRepuestoAPIView(APIView):
         return Response(serializer.errors, status=400)
     
 class RepuestosListView(ListAPIView):
+      
     queryset = Repuestos.objects.filter(cantidad__gt=0).order_by('id')
     serializer_class = RepuestosSerializer
 
 class HistorialRepuestosListView(ListAPIView):
+    permission_classes = [IsAdminOrSupervisor]
     queryset = HistorialRepuestos.objects.select_related('repuesto').order_by('-timestamp')
     serializer_class = HistorialRepuestosSerializer
 

@@ -13,13 +13,15 @@ from .models import Ruta, Conductor, Bus
 from .serializers.conductor_bus_serializer import RutaCreateSerializer, RutaAsignarConductorSerializer, ConductorListaSerializer
 from rest_framework.permissions import IsAuthenticated
 from datetime import date
-from core.permissions import IsAdminOrFacturacion
+from core.permissions import IsAdminOrFacturacion, IsAdminOrSupervisor, IsAdminOrOperador
 # Create your views here.
 class HorarioPredefinidoListView(ListAPIView):
     queryset = HorarioPredefinido.objects.all()
     serializer_class = HorarioPredefinidoSerializer
     
 class RegistroConductorBusView(APIView):
+    
+    permission_classes = [IsAdminOrOperador]
     def post(self, request):
         serializer = RegistroConductorBusSerializer(data=request.data)
         if serializer.is_valid():
@@ -40,6 +42,9 @@ class RegistroConductorBusView(APIView):
     
 #historial rutas
 class HistorialRutasView(APIView):
+    
+    permission_classes = [IsAdminOrSupervisor]
+    
     def get(self, request):
         desde_str = request.query_params.get('desde')
         hasta_str = request.query_params.get('hasta')
@@ -74,10 +79,14 @@ class HistorialRutasView(APIView):
 
 
 class CrearRutaView(generics.CreateAPIView):
+    permission_classes = [IsAdminOrSupervisor]
     queryset = Ruta.objects.all()
     serializer_class = RutaCreateSerializer
 
 class AsignarConductorRutaView(generics.UpdateAPIView):
+    
+    permission_classes = [IsAdminOrSupervisor]
+    
     queryset = Ruta.objects.all()
     serializer_class = RutaAsignarConductorSerializer
     lookup_field = 'numero_ruta'
@@ -88,10 +97,14 @@ class ListaConductoresView(generics.ListAPIView):
     serializer_class = ConductorListaSerializer
 
 class CrearHorarioRutaView(generics.CreateAPIView):
+    permission_classes = [IsAdminOrOperador]
     queryset = HorarioRuta.objects.all()
     serializer_class = HorarioRutaCreateSerializer
     
 class DatosAsignacionRutaView(APIView):
+    
+    permission_classes = [IsAdminOrSupervisor]
+    
     def get(self, request):
         # Rutas sin conductor
         rutas_sin_conductor = Ruta.objects.filter(conductor__isnull=True)

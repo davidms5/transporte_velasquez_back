@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from .models import Ticket, Factura, Combustible
 from .serializers.ticketFacturasSerializer import TicketCreateSerializer, FacturaSerializer, VentaReporteSerializer
-from .serializers.gastosSerializer import CombustibleCreateSerializer
+from .serializers.gastosSerializer import CombustibleCreateSerializer, ActualizarCombustibleSerializer, CombustibleHistorialSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,9 +11,13 @@ from django.utils.timezone import now
 from django.utils.dateparse import parse_date
 from modules.ventas.services.cierre_diario_service import calcular_cierre_del_dia
 from .services.gastos_service import registrar_combustible
+from .services.combustible_service import CombustibleService
 from core.permissions import IsAdminOrSupervisor
 from django.db.models import Count, F, DecimalField, ExpressionWrapper
 from core.permissions import IsAdminOrFacturacion
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+from datetime import datetime
 # Create your views here.
 class CrearTicketView(generics.CreateAPIView):
     
@@ -128,3 +132,45 @@ class RegistroFacturaCombustibleView(generics.CreateAPIView):
         #registrar_combustible(serializer.validated_data)
         serializer.save()
         
+class ActualizarCombustibleView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        serializer = ActualizarCombustibleSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            combustible = CombustibleService.actualizar_precio_combustible(
+                numero_factura=serializer.validated_data['numero_factura'],
+                numero_bus=serializer.validated_data['numero_bus'],
+                nuevo_precio=serializer.validated_data['precio_combustible']
+            )
+            return Response({
+                "mensaje": "Monto de gasolina actualizado correctamente.",
+                "uuid_combustible": str(combustible.uuid_combustible),
+                "updated_at": combustible.updated_at
+            }, status=200)
+
+        except ObjectDoesNotExist as e:
+            return Response({"error": str(e)}, status=404)
+
+        except Exception as e:
+            return Response({"error": "Error inesperado."}, status=500)
+        
+class HistorialCombustibleView(APIView):
+    def get(self, request):
+        fecha_str = request.query_params.get('fecha')  # formato: YYYY-MM-DD
+
+        if fecha_str:
+            try:
+                fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            except ValueError:
+                return Response({"error": "Formato de fecha inválido. Usa YYYY-MM-DD."}, status=400)
+        else:
+            fecha = timezone.localdate()
+
+        queryset = Combustible.objects.filter(created_at__date=fecha).order_by('-created_at')
+        serializer = CombustibleHistorialSerializer(queryset, many=True)
+
+        return Response(serializer.data, status=200)

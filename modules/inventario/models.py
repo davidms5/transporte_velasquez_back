@@ -33,7 +33,7 @@ class HistorialRepuestos(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        db_table = 'inventario_historial_repuestos'  # <- Nombre personalizado de la tabla TODO: descomentar y arreglar relacion en base de datos
+        db_table = 'inventario_historial_repuestos'  # <- Nombre personalizado de la tabla 
 
     def __str__(self):
         return f"{self.repuesto.nombre} - {self.get_estado_display()} - {self.cantidad}"

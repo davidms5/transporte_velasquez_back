@@ -10,11 +10,14 @@ class CombustibleService:
             raise ObjectDoesNotExist("Bus no encontrado.")
 
         try:
-            combustible = Combustible.objects.get(numero_factura=numero_factura, bus=bus)
+            combustible = Combustible.objects.get(numero_factura=numero_factura)
         except Combustible.DoesNotExist:
             raise ObjectDoesNotExist("Registro de combustible no encontrado para esa factura o bus.")
 
         combustible.precio_combustible = nuevo_precio
+        if combustible.bus is None:
+            combustible.bus = bus
+            
         combustible.save()
 
         return combustible

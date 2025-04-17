@@ -69,3 +69,8 @@ class VentaReporteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Factura
         fields = ["numero_factura", "numero_ruta", "hora_salida", "hora_llegada"]
+        
+class CierreDiarioResponseSerializer(serializers.Serializer):
+    fecha = serializers.DateField()
+    total_facturas = serializers.IntegerField()
+    total_monto = serializers.DecimalField(max_digits=12, decimal_places=2)

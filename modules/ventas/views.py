@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from .models import Ticket, Factura, Combustible
-from .serializers.ticketFacturasSerializer import TicketCreateSerializer, FacturaSerializer, VentaReporteSerializer
+from .models import Ticket, Factura, Combustible, CierreDiario
+from .serializers.ticketFacturasSerializer import TicketCreateSerializer, FacturaSerializer, VentaReporteSerializer, CierreDiarioResponseSerializer
 from .serializers.gastosSerializer import CombustibleCreateSerializer, ActualizarCombustibleSerializer, CombustibleHistorialSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -173,4 +173,28 @@ class HistorialCombustibleView(APIView):
         queryset = Combustible.objects.filter(created_at__date=fecha).order_by('-created_at')
         serializer = CombustibleHistorialSerializer(queryset, many=True)
 
+        return Response(serializer.data, status=200)
+    
+class CierreDiarioDetailView(APIView):
+    def get(self, request):
+        fecha_str = request.query_params.get("fecha")
+
+        # Fecha actual por defecto
+        try:
+            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date() if fecha_str else timezone.localdate()
+        except ValueError:
+            return Response({"error": "Formato de fecha inválido. Usa YYYY-MM-DD."}, status=400)
+
+        try:
+            cierre = CierreDiario.objects.get(creado_en__date=fecha)
+        except CierreDiario.DoesNotExist:
+            return Response({"error": "No se encontró un cierre para esta fecha."}, status=404)
+        
+        data = {
+            "fecha": fecha,
+            "total_facturas": cierre.total_facturas,
+            "total_monto": cierre.total_monto
+        }
+
+        serializer = CierreDiarioResponseSerializer(data)
         return Response(serializer.data, status=200)

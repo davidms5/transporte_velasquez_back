@@ -96,9 +96,10 @@ elif not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", # Permite solicitudes desde tu frontend en Vite
-]
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+#[
+#    "http://localhost:5173", # Permite solicitudes desde tu frontend en Vite
+#]
 
 CORS_ALLOW_CREDENTIALS = True  # Permitir envío de cookies y autenticación
 

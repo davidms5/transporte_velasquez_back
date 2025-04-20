@@ -11,12 +11,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto de los archivos del proyecto
 COPY . .
 
-RUN mkdir -p /app/staticfiles
+#RUN mkdir -p /app/staticfiles
 # Collect static files
-RUN python manage.py collectstatic --noinput
-
+#RUN python manage.py collectstatic --noinput
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 # Expone el puerto que Railway utilizará
 EXPOSE 8000
 
 # Comando para ejecutar la aplicación
-CMD ["gunicorn", "inventario_buses.wsgi:application", "--bind", "0.0.0.0:8000"]
+#CMD ["gunicorn", "inventario_buses.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["/app/entrypoint.sh"]

@@ -27,11 +27,12 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production! TODO:
-DEBUG = True
+DEBUG = env("DEBUG", default=False)  # Cambiar a False en producción
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
 
 # variables de negocio
 IVA = env("PORCENTAJE_IVA")
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -76,7 +77,7 @@ REST_FRAMEWORK = {
 
 
 # Desactivar CSRF solo en la API
-CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=["http://localhost:8000"])
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Sistema de Inventario de Autobuses',
@@ -91,6 +92,9 @@ SPECTACULAR_SETTINGS = {
 #CORS
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
+elif not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
     
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # Permite solicitudes desde tu frontend en Vite
@@ -123,6 +127,7 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -206,7 +211,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

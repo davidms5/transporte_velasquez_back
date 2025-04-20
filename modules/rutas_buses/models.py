@@ -6,6 +6,10 @@ class Bus(models.Model):
     numero_id = models.CharField(max_length=10, unique=True, db_index=True)
     modelo = models.CharField(max_length=50, db_index=True)
     ruta_asignada = models.ForeignKey('Ruta', null=True, blank=True, on_delete=models.SET_NULL, related_name="buses")
+    
+    class Meta:
+        verbose_name = "Bus"
+        verbose_name_plural = "Buses"
 
     def __str__(self):
         return f"Bus {self.numero_id} - {self.modelo}"
@@ -16,6 +20,10 @@ class Conductor(models.Model):
     numero_licencia = models.CharField(max_length=20, unique=True, db_index=True)
     dpi = models.CharField(max_length=20, unique=True, db_index=True)
     expiracion_licencia = models.DateField()
+    
+    class Meta:
+        verbose_name = "Conductor"
+        verbose_name_plural = "Conductores"
 
     def __str__(self):
         return f"{self.nombre} ({self.numero_licencia})"

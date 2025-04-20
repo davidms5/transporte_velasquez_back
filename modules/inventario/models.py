@@ -22,6 +22,10 @@ class Repuestos(models.Model):
     descripcion = models.TextField(blank=True, null=True)  # Campo opcional de texto
     factura = models.ForeignKey(Factura, on_delete=models.CASCADE, related_name="repuestos")
     
+    class Meta:
+        verbose_name = "Repuesto"
+        verbose_name_plural = "Repuestos"
+    
     def __str__(self):
         return f"{self.nombre} ({self.cantidad} disponibles)"
     

@@ -16,4 +16,4 @@ class ActualizarCombustibleSerializer(serializers.Serializer):
 class CombustibleHistorialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Combustible
-        fields = ['numero_factura', 'proveedor', 'cantidad', 'created_at']    
+        fields = ['numero_factura', 'proveedor', 'cantidad','precio_combustible', 'created_at']    

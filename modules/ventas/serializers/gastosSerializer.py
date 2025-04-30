@@ -14,6 +14,7 @@ class ActualizarCombustibleSerializer(serializers.Serializer):
     precio_combustible = serializers.DecimalField(max_digits=10, decimal_places=2)
 
 class CombustibleHistorialSerializer(serializers.ModelSerializer):
+    bus_numero_id = serializers.CharField(source="bus.numero_id", default=None)
     class Meta:
         model = Combustible
-        fields = ['numero_factura', 'proveedor', 'cantidad','precio_combustible', 'created_at']    
+        fields = ['numero_factura', 'proveedor', 'cantidad','precio_combustible', "bus_numero_id", 'created_at']    

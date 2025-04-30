@@ -4,8 +4,12 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from ..models import CustomUser, Constantes
 from rest_framework.response import Response
+from django.http import HttpRequest, JsonResponse
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken as AccessTokenType
 
-def handle_login(request, access_token_str, base_response):
+def handle_login(request: HttpRequest, access_token_str: str, base_response: Response) -> Response | JsonResponse:
     
     try:
         decoded_token = AccessToken(access_token_str)
@@ -49,10 +53,11 @@ def handle_login(request, access_token_str, base_response):
         return JsonResponse({"error": "Usuario no encontrado"}, status=404)
     except Exception as e:
         print(f"Error en login: {e}")
+        return JsonResponse({"error": "Error en el login"}, status=500)
 
     return base_response
 
-def handle_logout(request, refresh_token):
+def handle_logout(request: HttpRequest, refresh_token: str | None) -> Response:
     
     if refresh_token:
         try:

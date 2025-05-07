@@ -9,7 +9,8 @@ from .views import (
     RegistroFacturaCombustibleView,
     ActualizarCombustibleView,
     HistorialCombustibleView,
-    CierreDiarioDetailView)
+    CierreDiarioDetailView,
+    GastoCompraCreateView)
 
 urlpatterns = [
     path("tickets-crear/", CrearTicketView.as_view(), name="crear-ticket"),
@@ -19,7 +20,8 @@ urlpatterns = [
     path('cierre-del-dia/', CierreDiarioView.as_view(), name='cierre-del-dia'),
     path("resumen-por-ruta/", ResumenPorRutaView.as_view(), name="resumen-por-ruta"),
     path("gastos/combustible-registrar/", RegistroFacturaCombustibleView.as_view(), name="registrar-combustible"),
-    path('gastos/combustible/actualizar/', ActualizarCombustibleView.as_view(), name='actualizar-combustible'),
+    #path('gastos/combustible/actualizar/', ActualizarCombustibleView.as_view(), name='actualizar-combustible'),
     path('combustible/historial/', HistorialCombustibleView.as_view(), name='combustible-historial'),
     path("cierre-diario/generar/", CierreDiarioDetailView.as_view(), name="cierre-diario"),
+    path("gastos/ingresar-gasto/", GastoCompraCreateView.as_view(), name="gasto-compra")
 ]

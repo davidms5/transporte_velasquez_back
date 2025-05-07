@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from .models import Ticket, Factura, Combustible, CierreDiario
+from .models import Ticket, Factura, Combustible, CierreDiario, GastoCompra
 from .serializers.ticketFacturasSerializer import TicketCreateSerializer, FacturaSerializer, VentaReporteSerializer, CierreDiarioResponseSerializer
-from .serializers.gastosSerializer import CombustibleCreateSerializer, ActualizarCombustibleSerializer, CombustibleHistorialSerializer
+from .serializers.gastosSerializer import CombustibleCreateSerializer, ActualizarCombustibleSerializer, CombustibleHistorialSerializer, GastoCompraCreateSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -198,3 +198,11 @@ class CierreDiarioDetailView(APIView):
 
         serializer = CierreDiarioResponseSerializer(data)
         return Response(serializer.data, status=200)
+    
+class GastoCompraCreateView(generics.CreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    queryset = GastoCompra.objects.all()
+    serializer_class = GastoCompraCreateSerializer
+    

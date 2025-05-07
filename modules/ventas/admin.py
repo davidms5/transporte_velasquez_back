@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ticket, Factura, Combustible, CierreDiario
+from .models import Ticket, Factura, Combustible, CierreDiario, GastoCompra
 # Register your models here.
 #admin.site.register(Ticket)
 @admin.register(Ticket)
@@ -17,3 +17,8 @@ class CombustibleAdmin(admin.ModelAdmin):
         return False
     
 admin.site.register(CierreDiario)
+
+@admin.register(GastoCompra)
+class GastoCompraAdmin(admin.ModelAdmin):
+    def has_delete_permission(self, request, obj=None):
+        return False

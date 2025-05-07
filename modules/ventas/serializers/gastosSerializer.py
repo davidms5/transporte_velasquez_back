@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from ..models import Combustible
+from ..models import Combustible, GastoCompra
 
 class CombustibleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Combustible
-        fields = ["numero_factura", "proveedor", "cantidad", "uuid_combustible", "created_at"]
+        fields = ["numero_factura", "precio_combustible", "cantidad", "uuid_combustible", "created_at"]
 
         read_only_fields = ["uuid_combustible", "created_at"]
         
@@ -18,3 +18,8 @@ class CombustibleHistorialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Combustible
         fields = ['numero_factura', 'proveedor', 'cantidad','precio_combustible', "bus_numero_id", 'created_at']    
+        
+class GastoCompraCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GastoCompra
+        fields = ["numero_factura", "proveedor", "cantidad"]

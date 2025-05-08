@@ -14,6 +14,8 @@ from .serializers.conductor_bus_serializer import RutaCreateSerializer, RutaAsig
 from rest_framework.permissions import IsAuthenticated
 from datetime import date
 from core.permissions import IsAdminOrFacturacion, IsAdminOrSupervisor, IsAdminOrOperador
+from core.pagination import CustomPaginator
+
 # Create your views here.
 class HorarioPredefinidoListView(ListAPIView):
     queryset = HorarioPredefinido.objects.all()
@@ -46,35 +48,51 @@ class HistorialRutasView(APIView):
     permission_classes = [IsAdminOrSupervisor]
     
     def get(self, request):
-        desde_str = request.query_params.get('desde')
-        hasta_str = request.query_params.get('hasta')
+        numero_ruta = request.query_params.get('numero_ruta')
 
-        desde = parse_date(desde_str) if desde_str else None
-        hasta = parse_date(hasta_str) if hasta_str else None
+        rutas_qs = Ruta.objects.select_related('bus', 'conductor')
+        horarios_qs = HorarioRuta.objects.select_related('ruta', 'bus')
 
-        rutas = Ruta.objects.all()
-        horarios = HorarioRuta.objects.all()
+        # Aplicamos filtro si se especifica
+        if numero_ruta:
+            rutas_qs = rutas_qs.filter(numero_ruta=numero_ruta)
+            horarios_qs = horarios_qs.filter(ruta__numero_ruta=numero_ruta)
 
-        if not desde and not hasta:
-            hoy = date.today()
-            rutas = rutas.filter(created_at__date=hoy)
-            horarios = horarios.filter(created_at__date=hoy)
-        else:
-            if desde:
-                rutas = rutas.filter(created_at__date__gte=desde)
-                horarios = horarios.filter(created_at__date__gte=desde)
-            if hasta:
-                rutas = rutas.filter(created_at__date__lte=hasta)
-                horarios = horarios.filter(created_at__date__lte=hasta)
+        # Subsets
+        rutas_agregadas_qs = rutas_qs.order_by('-id')
+        asignaciones_qs = rutas_qs.exclude(conductor__isnull=True).order_by('-id')
+        horarios_asignados_qs = horarios_qs.order_by('-id')
 
-        rutas_agregadas = rutas.order_by('-id')[:10]
-        asignaciones = rutas.exclude(conductor__isnull=True).order_by('-id')[:10]
-        horarios_asignados = horarios.order_by('-id')[:10]
+        # Paginadores independientes para evitar sobreescritura del estado interno
+        paginator_rutas = CustomPaginator()
+        paginator_asignaciones = CustomPaginator()
+        paginator_horarios = CustomPaginator()
+
+        paginated_rutas = paginator_rutas.paginate_queryset(rutas_agregadas_qs, request)
+        paginated_asignaciones = paginator_asignaciones.paginate_queryset(asignaciones_qs, request)
+        paginated_horarios = paginator_horarios.paginate_queryset(horarios_asignados_qs, request)
 
         return Response({
-            "rutas_agregadas": RutaSimpleSerializer(rutas_agregadas, many=True).data,
-            "asignaciones_rutas": AsignacionRutaSerializer(asignaciones, many=True).data,
-            "horarios_asignados": HorarioAsignadoSerializer(horarios_asignados, many=True).data
+            "rutas_agregadas": RutaSimpleSerializer(paginated_rutas, many=True).data,
+            "asignaciones_rutas": AsignacionRutaSerializer(paginated_asignaciones, many=True).data,
+            "horarios_asignados": HorarioAsignadoSerializer(paginated_horarios, many=True).data,
+            "pagination": {
+                "rutas_agregadas": {
+                    "page": paginator_rutas.page.number,
+                    "total_pages": paginator_rutas.page.paginator.num_pages,
+                    "total_items": paginator_rutas.page.paginator.count
+                },
+                "asignaciones_rutas": {
+                    "page": paginator_asignaciones.page.number,
+                    "total_pages": paginator_asignaciones.page.paginator.num_pages,
+                    "total_items": paginator_asignaciones.page.paginator.count
+                },
+                "horarios_asignados": {
+                    "page": paginator_horarios.page.number,
+                    "total_pages": paginator_horarios.page.paginator.num_pages,
+                    "total_items": paginator_horarios.page.paginator.count
+                }
+            }
         })
 
 

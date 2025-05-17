@@ -44,7 +44,7 @@ class HistorialRepuestosSerializer(serializers.ModelSerializer):
 # esto puede servir tanto para post como para put de historial TODO: revisar que estado = 'IN' no tenga redundancias en el serializer
 class RepuestoHistorialSerializer(serializers.Serializer):
     """Serializador para manejar el POST que crea un repuesto y su historial"""
-    repuesto_id_unico = serializers.CharField(required=True, allow_null=True, allow_blank=True)
+    repuesto_id_unico = serializers.CharField(required=False, allow_null=True, allow_blank=True)
     nombre = serializers.CharField(max_length=255, required=True)
     descripcion = serializers.CharField(required=False, allow_blank=True)
     cantidad = serializers.IntegerField(min_value=1)

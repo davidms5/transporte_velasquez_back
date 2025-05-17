@@ -31,3 +31,11 @@ class IsAdminOrFacturacion(BasePermission):
     def has_permission(self, request, view):
         user = request.user
         return user and user.is_authenticated and user.role in [Constantes.ADMIN, Constantes.BILLING]
+    
+class IsAdminOrFacturacionOrSupervisor(BasePermission):
+    """
+    Permite el acceso solo a usuarios con rol 'admin' o 'facturacion' o 'supervisor'
+    """
+    def has_permission(self, request, view):
+        user = request.user
+        return user and user.is_authenticated and user.role in [Constantes.ADMIN, Constantes.BILLING, Constantes.SUPERVISOR]

@@ -21,7 +21,7 @@ from datetime import datetime
 # Create your views here.
 class CrearTicketView(generics.CreateAPIView):
     
-    permission_classes = [IsAdminOrFacturacion]
+    permission_classes = [IsAuthenticated]
     queryset = Ticket.objects.all()
     
     serializer_class = TicketCreateSerializer
@@ -29,7 +29,7 @@ class CrearTicketView(generics.CreateAPIView):
     
 class FacturasActivasView(generics.ListAPIView):
     
-    permission_classes = [IsAdminOrFacturacion]
+    permission_classes = [IsAuthenticated]
     
     serializer_class = FacturaSerializer
     
@@ -39,7 +39,7 @@ class FacturasActivasView(generics.ListAPIView):
     
 class AnularFacturaView(APIView):
     
-    permission_classes = [IsAdminOrFacturacion]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, numero_factura):
         try:
@@ -67,7 +67,7 @@ class ReporteVentasView(APIView):
     
 class CierreDiarioView(APIView):
     
-    permission_classes = [IsAdminOrSupervisor]
+    permission_classes = [IsAuthenticated]
     
     def post(self, request):
         try:

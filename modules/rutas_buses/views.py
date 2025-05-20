@@ -23,7 +23,7 @@ class HorarioPredefinidoListView(ListAPIView):
     
 class RegistroConductorBusView(APIView):
     
-    permission_classes = [IsAdminOrOperador]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = RegistroConductorBusSerializer(data=request.data)
         if serializer.is_valid():
@@ -45,7 +45,7 @@ class RegistroConductorBusView(APIView):
 #historial rutas
 class HistorialRutasView(APIView):
     
-    permission_classes = [IsAdminOrSupervisor]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         numero_ruta = request.query_params.get('numero_ruta')
@@ -97,13 +97,13 @@ class HistorialRutasView(APIView):
 
 
 class CrearRutaView(generics.CreateAPIView):
-    permission_classes = [IsAdminOrSupervisor]
+    permission_classes = [IsAuthenticated]
     queryset = Ruta.objects.all()
     serializer_class = RutaCreateSerializer
 
 class AsignarConductorRutaView(generics.UpdateAPIView):
     
-    permission_classes = [IsAdminOrSupervisor]
+    permission_classes = [IsAuthenticated]
     
     queryset = Ruta.objects.all()
     serializer_class = RutaAsignarConductorSerializer
@@ -115,13 +115,13 @@ class ListaConductoresView(generics.ListAPIView):
     serializer_class = ConductorListaSerializer
 
 class CrearHorarioRutaView(generics.CreateAPIView):
-    permission_classes = [IsAdminOrOperador]
+    permission_classes = [IsAuthenticated]
     queryset = HorarioRuta.objects.all()
     serializer_class = HorarioRutaCreateSerializer
     
 class DatosAsignacionRutaView(APIView):
     
-    permission_classes = [IsAdminOrSupervisor]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request):
         # Rutas sin conductor
@@ -160,7 +160,7 @@ class RutasSinHorarioView(APIView):
         })
         
 class RutasConHorarioView(APIView):
-    permission_classes = [IsAdminOrFacturacionOrSupervisor]  
+    permission_classes = [IsAuthenticated]  
 
     def get(self, request):
         # Filtra rutas con al menos un horario asignado
@@ -169,7 +169,7 @@ class RutasConHorarioView(APIView):
         return Response(serializer.data)
     
 class HorariosDeRutaView(APIView):
-    permission_classes = [IsAdminOrFacturacion]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, numero_ruta):
         try:

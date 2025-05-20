@@ -47,7 +47,7 @@ class RepuestosListView(ListAPIView):
     serializer_class = RepuestosSerializer
 
 class HistorialRepuestosListView(ListAPIView):
-    permission_classes = [IsAdminOrSupervisor]
+    permission_classes = [IsAuthenticated]
     queryset = HistorialRepuestos.objects.select_related('repuesto').order_by('-timestamp')
     serializer_class = HistorialRepuestosSerializer
 
@@ -64,7 +64,7 @@ class RepuestoDetailCustomView(APIView):
 #Factura views TODO: luego separar en una carpeta aparte de views
 
 class FacturaListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminOrFacturacion]
+    permission_classes = [IsAuthenticated]
     queryset = Factura.objects.filter(activo=True).order_by('-id')
     serializer_class = FacturaDetailSerializer
 
@@ -76,7 +76,7 @@ class FacturaListCreateView(generics.ListCreateAPIView):
 
 class FacturaRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     
-    permission_classes = [IsAdminOrFacturacion]
+    permission_classes = [IsAuthenticated]
     
     queryset = Factura.objects.filter(activo=True)
     lookup_field = 'codigo'

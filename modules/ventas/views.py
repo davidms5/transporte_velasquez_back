@@ -176,7 +176,7 @@ class HistorialCombustibleView(APIView):
         queryset = GastoCompra.objects.filter(created_at__date=fecha).order_by('-created_at')
         serializer_gastos_compras = GastoCompraHistorialSerializer(queryset, many=True)
         
-        data_total = serializer_combustible.data + serializer_gastos_compras.data
+        data_total = serializer_gastos_compras.data #serializer_combustible.data +
         return Response(data_total, status=200)
     
 class CierreDiarioDetailView(APIView):

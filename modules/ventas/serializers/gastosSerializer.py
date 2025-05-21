@@ -18,7 +18,8 @@ class CombustibleHistorialSerializer(serializers.ModelSerializer):
     bus_numero_id = serializers.CharField(source="bus.numero_id", default=None)
     class Meta:
         model = Combustible
-        fields = ['numero_factura', 'proveedor', 'cantidad','precio_combustible', "bus_numero_id", 'created_at']    
+        #'numero_factura','proveedor', 'cantidad', 'created_at'
+        fields = ['precio_combustible', "bus_numero_id"]    
         
 class GastoCompraCreateSerializer(serializers.ModelSerializer):
     class Meta:

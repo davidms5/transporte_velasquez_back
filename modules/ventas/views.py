@@ -170,11 +170,14 @@ class HistorialCombustibleView(APIView):
         else:
             fecha = timezone.localdate()
 
-        #queryset = Combustible.objects.filter(created_at__date=fecha).order_by('-created_at')
-        #serializer = CombustibleHistorialSerializer(queryset, many=True)
+        queryset_combustible = Combustible.objects.filter(created_at__date=fecha).order_by('-created_at')
+        serializer_combustible = CombustibleHistorialSerializer(queryset_combustible, many=True)
+        
         queryset = GastoCompra.objects.filter(created_at__date=fecha).order_by('-created_at')
-        serializer = GastoCompraHistorialSerializer(queryset, many=True)
-        return Response(serializer.data, status=200)
+        serializer_gastos_compras = GastoCompraHistorialSerializer(queryset, many=True)
+        
+        data_total = serializer_combustible.data + serializer_gastos_compras.data
+        return Response(data_total, status=200)
     
 class CierreDiarioDetailView(APIView):
     def get(self, request):

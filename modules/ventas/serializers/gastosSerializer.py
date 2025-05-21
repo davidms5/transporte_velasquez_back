@@ -23,3 +23,9 @@ class GastoCompraCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = GastoCompra
         fields = ["numero_factura", "proveedor", "cantidad"]
+
+class GastoCompraHistorialSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = GastoCompra
+        fields = ["numero_factura", "proveedor", "cantidad", "created_at"]

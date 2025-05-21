@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from .models import Ticket, Factura, Combustible, CierreDiario, GastoCompra
 from .serializers.ticketFacturasSerializer import TicketCreateSerializer, FacturaSerializer, VentaReporteSerializer, CierreDiarioResponseSerializer
-from .serializers.gastosSerializer import CombustibleCreateSerializer, ActualizarCombustibleSerializer, CombustibleHistorialSerializer, GastoCompraCreateSerializer
+from .serializers.gastosSerializer import CombustibleCreateSerializer, ActualizarCombustibleSerializer, CombustibleHistorialSerializer, GastoCompraCreateSerializer, GastoCompraHistorialSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -170,9 +170,10 @@ class HistorialCombustibleView(APIView):
         else:
             fecha = timezone.localdate()
 
-        queryset = Combustible.objects.filter(created_at__date=fecha).order_by('-created_at')
-        serializer = CombustibleHistorialSerializer(queryset, many=True)
-
+        #queryset = Combustible.objects.filter(created_at__date=fecha).order_by('-created_at')
+        #serializer = CombustibleHistorialSerializer(queryset, many=True)
+        queryset = GastoCompra.objects.filter(created_at__date=fecha).order_by('-created_at')
+        serializer = GastoCompraHistorialSerializer(queryset, many=True)
         return Response(serializer.data, status=200)
     
 class CierreDiarioDetailView(APIView):

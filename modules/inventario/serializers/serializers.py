@@ -54,7 +54,7 @@ class RepuestoHistorialSerializer(serializers.Serializer):
     
     def validate_factura(self, factura_codigo):
         try:
-            return Factura.objects.get(codigo=factura_codigo)
+            return Factura.objects.filter(codigo=factura_codigo).first()
         except Factura.DoesNotExist:
             raise serializers.ValidationError("Factura no encontrada.")
 

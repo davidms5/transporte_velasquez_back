@@ -2,10 +2,10 @@ from rest_framework import serializers
 from ..models import Combustible, GastoCompra
 
 class CombustibleCreateSerializer(serializers.ModelSerializer):
-    cantidad = serializers.DecimalField(max_digits=10, decimal_places=2, default= 1.0)
+    #cantidad = serializers.DecimalField(max_digits=10, decimal_places=2, default= 1.0)
     class Meta:
         model = Combustible
-        fields = ["numero_factura", "precio_combustible", "cantidad", "uuid_combustible", "created_at"]
+        fields = ["numero_factura", "precio_combustible", "uuid_combustible", "created_at"]
 
         read_only_fields = ["uuid_combustible", "created_at"]
         

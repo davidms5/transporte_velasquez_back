@@ -5,7 +5,7 @@ from django.db import models
 class Factura(models.Model):
     codigo = models.CharField(max_length=50, db_index=True)  # Código de factura
     proveedor = models.CharField(max_length=255)
-    numero_factura = models.CharField(max_length=100)
+    numero_factura = models.CharField(max_length=100, unique=True, db_index=True)  # Número de factura
     cai = models.CharField(max_length=100)  # Código de autorización de impresión
     activo = models.BooleanField(default=True)  # Soft delete
     created_at = models.DateTimeField(auto_now_add=True)

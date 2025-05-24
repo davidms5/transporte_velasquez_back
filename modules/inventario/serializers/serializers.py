@@ -61,13 +61,13 @@ class RepuestoHistorialSerializer(serializers.Serializer):
   
     def create(self, validated_data):
         """Crea un repuesto y su historial asociado"""
-        repuesto_id = validated_data.get("repuesto_id_unico")
+        #repuesto_id = validated_data.get("repuesto_id_unico")
         estado = "IN"
         factura = self.validate_factura(validated_data['factura_codigo'])
         
          # Verificar si ya existe uno con ese ID único
-        if Repuestos.objects.filter(repuesto_id_unico=repuesto_id).exists():
-            raise serializers.ValidationError({"repuesto_id_unico": "Este ID único ya está registrado."})
+        #if Repuestos.objects.filter(repuesto_id_unico=repuesto_id).exists():
+        #    raise serializers.ValidationError({"repuesto_id_unico": "Este ID único ya está registrado."})
         #TODO: este es para caso del put, pero mas adelante separar la logica
         #if repuesto_id:
         #    try:
@@ -83,7 +83,7 @@ class RepuestoHistorialSerializer(serializers.Serializer):
             #        "Ya existe un repuesto con ese nombre o número de factura."
             #    )
         repuesto = Repuestos.objects.create(
-            repuesto_id_unico=repuesto_id,
+            #repuesto_id_unico=repuesto_id,
             nombre=validated_data['nombre'],
             descripcion=validated_data.get('descripcion', ''),
             cantidad=validated_data['cantidad'],

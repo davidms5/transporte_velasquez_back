@@ -72,7 +72,7 @@ class Combustible(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE,null=True, blank=True, related_name="combustible") 
     numero_factura = models.CharField(max_length=20, unique=True, db_index=True)
     proveedor = models.CharField(max_length=255, null=True, blank=True)
-    cantidad = models.DecimalField(max_digits=10, decimal_places=2)
+    #cantidad = models.DecimalField(max_digits=10, decimal_places=2, default=1.0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -86,3 +86,4 @@ class GastoCompra(models.Model):
     cantidad = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    #combustible = models.ForeignKey(Combustible, on_delete=models.CASCADE, null=True, blank=True, related_name="gasto_compra")

@@ -45,6 +45,7 @@ class RepuestosListView(ListAPIView):
       
     queryset = Repuestos.objects.filter(cantidad__gt=0).order_by('id')
     serializer_class = RepuestosSerializer
+    pagination_class = None
 
 class HistorialRepuestosListView(ListAPIView):
     permission_classes = [IsAuthenticated]
